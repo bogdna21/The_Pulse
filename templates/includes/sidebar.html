@@ -1,0 +1,24 @@
+<!-- Контейнер сторінки -->
+<div class="container-fluid">
+  <!-- Верхній правий кут (логін/логаут) -->
+  <div class="position-fixed" style="top: 10px; right: 20px; z-index: 1030;">
+    {% if user.is_authenticated %}
+      User: <a href="{{ user.get_absolute_url }}">{{ user.get_username }}</a> |
+      <a href="{% url 'news:logout' %}?next={{ request.path }}">Logout</a>
+    {% else %}
+      <a href="{% url 'news:login' %}?next={{ request.path }}">Login</a>
+    {% endif %}
+  </div>
+
+  <!-- Лівий сайдбар -->
+  <div class="d-flex">
+    <div class="bg-light border-right" id="sidebar-wrapper" style="width: 200px; min-height: 100vh; top: 30px;">
+      <div class="list-group list-group-flush">
+        <a href="{% url 'news:index' %}" class="list-group-item list-group-item-action">Home</a>
+        <a href="{% url 'news:newspaper-list' %}" class="list-group-item list-group-item-action">All drivers</a>
+        <a href="{% url 'news:redactor-list' %}" class="list-group-item list-group-item-action">All cars</a>
+        <a href="{% url 'news:topic-list' %}" class="list-group-item list-group-item-action">All manufacturers</a>
+      </div>
+    </div>
+  </div>
+</div>

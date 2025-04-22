@@ -1,0 +1,10 @@
+{% load crispy_forms_filters %}
+{%  if form.error %}
+  <p>Invalid credentials</p>
+{% endif %}
+<form action="login.html" method="post">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <input type="submit" value="Submit">
+  <input type="hidden" name="next" value="{{ next }}">
+</form>
