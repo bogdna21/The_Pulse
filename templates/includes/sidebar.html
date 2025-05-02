@@ -4,9 +4,9 @@
   <div class="position-fixed" style="top: 10px; right: 20px; z-index: 1030;">
     {% if user.is_authenticated %}
       User: <a href="{{ user.get_absolute_url }}">{{ user.get_username }}</a> |
-      <a href="{% url 'news:logout' %}?next={{ request.path }}">Logout</a>
+      <a href="{% url 'account_logout' %}?next={{ request.path }}">Logout</a>
     {% else %}
-      <a href="{% url 'news:login' %}?next={{ request.path }}">Login</a>
+      <a href="{% url 'account_login' %}?next={{ request.path }}">Login</a>
     {% endif %}
   </div>
 
