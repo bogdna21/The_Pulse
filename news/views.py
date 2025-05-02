@@ -4,6 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views import generic
 
+from news.forms import TopicSearchForm
 from news.models import Newspaper, Topic, Redactor
 
 
@@ -36,3 +37,13 @@ class TopicListView(LoginRequiredMixin, generic.ListView):
     template_name = "news/topic.html"
     queryset = Topic.objects.all()
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(TopicListView, self).get_context_data(**kwargs)
+        context["search_form"] = TopicSearchForm()
+        return context
+
+    def get_queryset(self):
+        name = self.request.GET.get("name")
+        if name:
+            return self.queryset.filter(name__icontains=name)
+        return self.queryset

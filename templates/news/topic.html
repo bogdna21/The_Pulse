@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <form action="" method="get">
+    {{ search_form|crispy }}
+    <input type="submit" value="🔍" class="btn btn-secondary">
+  </form>
+  <h1>All topics</h1>
+  {% if topic_list %}
+    <ul>
+      {% for topic in topic_list %}
+        <li>
+          {{ topic.name }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no topics in news</p>
+  {% endif %}
+  {% include "includes/pagination.html" %}
+{% endblock %}
