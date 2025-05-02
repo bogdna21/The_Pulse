@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views import generic
 
 from news.forms import TopicSearchForm, RedactorSearchForm, NewspaperSearchForm
@@ -35,6 +36,22 @@ class NewspaperListView(LoginRequiredMixin, generic.ListView):
         if title:
             return self.queryset.filter(title__icontains=title)
         return self.queryset
+
+
+class NewspaperDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Newspaper
+    template_name = "news/newspaper_detail.html"
+
+
+class NewspaperDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Newspaper
+    success_url = reverse_lazy("news:newspaper-list")
+
+
+class NewspaperUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Newspaper
+    fields = "__all__"
+    success_url = reverse_lazy("news:newspaper-list")
 
 
 class RedactorListView(LoginRequiredMixin, generic.ListView):

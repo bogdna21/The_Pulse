@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>
+    {{ newspaper.title }}
+    <a href="{% url 'news:newspaper-delete' pk=newspaper.id %}" class="btn btn-danger ms-3">
+      Видалити
+    </a>
+
+    <a href="{% url 'news:newspaper-update' pk=newspaper.id %}" class="btn btn-secondary ms-2">
+      Редагувати
+    </a>
+  </h1>
+
+  <p>{{ newspaper.content }}</p>
+
+  <ul>
+    <li><strong>Тема:</strong> {{ newspaper.topic.name }}</li>
+    <li><strong>Дата публікації:</strong> {{ newspaper.published_date }}</li>
+    <li><strong>Редактори:</strong>
+      <ul>
+        {% for redactor in newspaper.publishers.all %}
+          <li>
+            {{ redactor.username }} ({{ redactor.first_name }} {{ redactor.last_name }}) —
+            {{ redactor.years_of_experience }} років досвіду
+          </li>
+        {% empty %}
+          <li>Редакторів не призначено.</li>
+        {% endfor %}
+      </ul>
+    </li>
+  </ul>
+
+{% endblock %}
