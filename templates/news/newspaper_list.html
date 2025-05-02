@@ -1,6 +1,22 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 
 {% block content %}
-  <p>something</p>
+  <h1>The newspapers</h1>
+  <form action="" method="get">
+    {{ search_form|crispy }}
+    <input type="submit" value="🔍" class="btn btn-secondary">
+  </form>
+  {% if newspaper_list %}
+    <ul>
+      {% for newspaper in newspaper_list %}
+        <li>
+          {{ newspaper.title }} {{ newspaper.content }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no newspapers in news</p>
+  {% endif %}
   {% include "includes/pagination.html" %}
 {% endblock %}

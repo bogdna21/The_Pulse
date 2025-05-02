@@ -1,6 +1,24 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 
 {% block content %}
-  <p>something</p>
+  <h1>Redactors</h1>
+  <form action="" method="get">
+    {{ search_form|crispy }}
+    <input type="submit" value="🔍" class="btn btn-secondary">
+  </form>
+  {% if redactor_list %}
+    <ul>
+      {% for redactor in redactor_list %}
+        <li>
+          <p>{{ redactor.first_name }} {{ redactor.last_name }}
+            Years of experience - {{ redactor.years_of_experience }}
+          </p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no redactors in news</p>
+  {% endif %}
   {% include "includes/pagination.html" %}
 {% endblock %}

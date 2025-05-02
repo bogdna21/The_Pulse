@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views import generic
 
-from news.forms import TopicSearchForm
+from news.forms import TopicSearchForm, RedactorSearchForm, NewspaperSearchForm
 from news.models import Newspaper, Topic, Redactor
 
 
@@ -25,11 +25,33 @@ class NewspaperListView(LoginRequiredMixin, generic.ListView):
     template_name = "news/newspaper_list.html"
     queryset = Newspaper.objects.all()
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(NewspaperListView, self).get_context_data(**kwargs)
+        context["search_form"] = NewspaperSearchForm()
+        return context
+
+    def get_queryset(self):
+        title = self.request.GET.get("title")
+        if title:
+            return self.queryset.filter(title__icontains=title)
+        return self.queryset
+
 
 class RedactorListView(LoginRequiredMixin, generic.ListView):
     model = Redactor
     template_name = "news/redactor-list.html"
     queryset = Redactor.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(RedactorListView, self).get_context_data(**kwargs)
+        context["search_form"] = RedactorSearchForm()
+        return context
+
+    def get_queryset(self):
+        username = self.request.GET.get("username")
+        if username:
+            return self.queryset.filter(username__icontains=username)
+        return self.queryset
 
 
 class TopicListView(LoginRequiredMixin, generic.ListView):
