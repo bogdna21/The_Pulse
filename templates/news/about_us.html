@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  <title>Про нас — The Pulse</title>
+{% endblock %}
+
+{% block content %}
+<div class="fade-in d-flex align-items-center justify-content-center"
+     style="background-image: url('{% static "images/bg-landing.png" %}');
+            background-size: cover;
+            background-position: center;
+            height: 80vh;
+            color: white;">
+
+  <div class="text-center p-5" style="background-color: rgba(0, 0, 0, 0.6); border-radius: 10px; max-width: 700px;">
+    <h1 class="display-4 font-weight-bold">Про нас</h1>
+    <p class="lead mt-3">
+      <b>The Pulse</b> — це незалежна онлайн-платформа для поширення новин, створена з метою надати читачам свіжу, достовірну та різноманітну інформацію з усього світу.
+      <br>Наша команда складається з досвідчених редакторів, журналістів і дослідників, які щоденно працюють над тим, щоб ви були в курсі найважливішого.
+      <br>Стосовно ідей, які ви б хотіли додати на сайті чи поскаржитися на якісь проблеми сайту завжди звертайтеся до нашої служби підтримки :)
+      <br>Сайт розроблено та вдосконалено <a href="https://github.com/bogdna21" class="font-weight-bold text-primary text-decoration-none">
+  bogdna21
+</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

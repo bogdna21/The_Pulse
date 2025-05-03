@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
@@ -13,12 +15,18 @@ def index(request: HttpRequest) -> HttpResponse:
     num_newspaper = Newspaper.objects.count()
     num_redactor = Redactor.objects.count()
     num_topic = Topic.objects.count()
+    year = datetime.now().year
     context = {
         "num_redactor": num_redactor,
         "num_newspaper": num_newspaper,
         "num_topic": num_topic,
+        "year": year,
     }
     return render(request, "news/index.html", context=context)
+
+
+def about_us(request: HttpRequest) -> HttpResponse:
+    return render(request, "news/about_us.html")
 
 
 class NewspaperListView(LoginRequiredMixin, generic.ListView):

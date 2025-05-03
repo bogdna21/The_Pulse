@@ -6,7 +6,7 @@ from .views import (
     RedactorListView,
     NewspaperDetailView,
     NewspaperDeleteView,
-    NewspaperUpdateView, RedactorDetailView, RedactorDeleteView, RedactorUpdateView
+    NewspaperUpdateView, RedactorDetailView, RedactorDeleteView, RedactorUpdateView, about_us
 )
 
 
@@ -21,7 +21,7 @@ urlpatterns = [
     path("news/redactor/<int:pk>/detail/", RedactorDetailView.as_view(), name="redactor-detail"),
     path("news/redactor/<int:pk>/delete/", RedactorDeleteView.as_view(), name="redactor-delete"),
     path("news/redactor/<int:pk>/update/", RedactorUpdateView.as_view(), name="redactor-update"),
-
+    path("news/about_us/", about_us, name="about-us")
 ]
 
 app_name = "news"

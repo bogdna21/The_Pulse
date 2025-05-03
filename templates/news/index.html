@@ -1,7 +1,76 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>The home page</h1>
-  <p>This page give you the information about this site</p>
-  <p>{{ num_topic }} {{ num_redactors }} {{ num_newspaper }}</p>
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<!-- Hero Section -->
+<div class="container-fluid text-white text-center fade-in" id="hero"
+     style="background-image: url('/static/images/bg-landing.png'); background-size: cover; background-position: center; height: 80vh; display: flex; align-items: center; justify-content: center;">
+  <div style="background-color: rgba(0, 0, 0, 0.6); padding: 40px; border-radius: 10px;">
+    <h1 class="display-4 fw-bold">Ласкаво просимо!</h1>
+    <p class="lead">Цей сайт дає вам інформацію про проєкт</p>
+    <a href="{% url 'news:about-us' %}" class="btn btn-outline-light mt-3">Дізнатися більше</a>
+  </div>
+</div>
+
+<!-- Stats Section -->
+<div id="stats" class="container text-center py-5 fade-in">
+  <div class="row">
+    <div class="col-md-4 mb-4">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body">
+          <h5 class="card-title">Тем</h5>
+          <p class="card-text display-6">{{ num_topic }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body">
+          <h5 class="card-title">Редакторів</h5>
+          <p class="card-text display-6">{{ num_redactors }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body">
+          <h5 class="card-title">Газет</h5>
+          <p class="card-text display-6">{{ num_newspaper }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Плавне з'явлення при прокрутці
+function revealOnScroll() {
+  const fadeElems = document.querySelectorAll('.fade-in');
+  fadeElems.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 100) {
+      el.classList.add('visible');
+    }
+  });
+}
+
+window.addEventListener('scroll', revealOnScroll);
+window.addEventListener('load', revealOnScroll);
+</script>
 {% endblock %}
