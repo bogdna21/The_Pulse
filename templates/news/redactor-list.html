@@ -11,7 +11,7 @@
     <ul>
       {% for redactor in redactor_list %}
         <li>
-          <p>{{ redactor.first_name }} {{ redactor.last_name }}
+          <p><a href="{% url 'news:redactor-detail' pk=redactor.id %}">{{ redactor.first_name }} {{ redactor.last_name }}</a>
             Years of experience - {{ redactor.years_of_experience }}
           </p>
         </li>

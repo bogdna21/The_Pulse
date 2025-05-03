@@ -71,6 +71,22 @@ class RedactorListView(LoginRequiredMixin, generic.ListView):
         return self.queryset
 
 
+class RedactorDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Redactor
+    template_name = "news/redactor_detail.html"
+
+
+class RedactorDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Newspaper
+    success_url = reverse_lazy("news:redactor-list")
+
+
+class RedactorUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Redactor
+    fields = "__all__"
+    success_url = reverse_lazy("news:redactor-list")
+
+
 class TopicListView(LoginRequiredMixin, generic.ListView):
     model = Topic
     template_name = "news/topic.html"

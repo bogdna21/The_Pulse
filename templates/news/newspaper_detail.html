@@ -3,6 +3,9 @@
 {% block content %}
   <h1>
     {{ newspaper.title }}
+    <a href="{% url 'news:newspaper-list' %}" class="btn btn-outline-primary me-2">
+      ⬅ Назад
+    </a>
     <a href="{% url 'news:newspaper-delete' pk=newspaper.id %}" class="btn btn-danger ms-3">
       Видалити
     </a>
