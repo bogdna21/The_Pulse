@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block content %}
+<div class="container mt-5 fade-in">
+  <div class="card shadow p-4">
+    <h2 class="text-center mb-4">🔐 Увійти до акаунту</h2>
+
+    <form method="post" action="{% url 'account_login' %}">
+      {% csrf_token %}
+      {% if form.errors %}
+        <div class="alert alert-danger">
+          <strong>Помилка входу:</strong> Перевірте введені дані.
+        </div>
+      {% endif %}
+
+      <div class="mb-3">
+        <label for="id_login" class="form-label">Ім’я користувача або Email</label>
+        <input type="text" name="login" class="form-control" id="id_login" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="id_password" class="form-label">Пароль</label>
+        <input type="password" name="password" class="form-control" id="id_password" required>
+      </div>
+
+      <div class="form-check mb-3">
+        <input type="checkbox" name="remember" class="form-check-input" id="id_remember">
+        <label class="form-check-label" for="id_remember">Запам’ятати мене</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mb-3">Увійти</button>
+    </form>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <a href="{% url 'news:custom_password_reset' %}">Забули пароль?</a>
+      <a href="{% url 'account_signup' %}">✍️ Зареєструватися</a>
+    </div>
+
+    <div class="d-flex align-items-center mb-2">
+      <span class="me-2">Або увійдіть через:</span>
+
+        <a href="{% provider_login_url 'google' %}" class="btn btn-google">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.15405 14.1907L5.42307 16.9196L2.75135 16.9761C1.9529 15.4951 1.5 13.8007 1.5 12.0002C1.5 10.259 1.92345 8.61706 2.67403 7.1713H2.67461L5.05319 7.60737L6.09515 9.97168C5.87707 10.6075 5.75821 11.29 5.75821 12.0002C5.75829 12.7709 5.89791 13.5094 6.15405 14.1907Z" fill="#FBBB00"></path>
+            <path d="M22.3164 10.0384C22.437 10.6736 22.4999 11.3295 22.4999 11.9999C22.4999 12.7517 22.4209 13.4849 22.2703 14.1923C21.7592 16.5992 20.4236 18.7009 18.5734 20.1882L18.5728 20.1876L15.5769 20.0348L15.1528 17.3878C16.3805 16.6678 17.34 15.5411 17.8454 14.1923H12.2307V10.0384H17.9273H22.3164Z" fill="#518EF8"></path>
+            <path d="M18.5725 20.1879L18.5731 20.1885C16.7737 21.6348 14.4879 22.5002 11.9997 22.5002C8.00099 22.5002 4.52445 20.2652 2.75098 16.9762L6.15368 14.1908C7.0404 16.5573 9.32329 18.242 11.9997 18.242C13.15 18.242 14.2277 17.931 15.1525 17.3881L18.5725 20.1879Z" fill="#28B446"></path>
+            <path d="M18.7022 3.9173L15.3006 6.70211C14.3435 6.10385 13.2122 5.75825 12.0001 5.75825C9.26313 5.75825 6.93753 7.52016 6.09523 9.97155L2.67465 7.17116H2.67407C4.42159 3.80193 7.94197 1.5 12.0001 1.5C14.5478 1.5 16.8837 2.40751 18.7022 3.9173Z" fill="#F14336"></path>
+          </svg>
+        </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

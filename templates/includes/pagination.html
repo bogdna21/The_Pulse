@@ -1,30 +1,31 @@
-<nav aria-label="pagination">
-  <ul class="pagination">
-    <li>
-      <a href="">
-        <span aria-hidden="true">&laquo;</span>
-        <span class="visuallyhidden">previous set of pages</span>
-      </a>
+{% if page_obj.has_previous %}
+  <li class="page-item">
+    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode|cut:'page=' }}">
+      &laquo;
+    </a>
+  </li>
+{% else %}
+  <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+{% endif %}
+
+{% for i in page_obj.paginator.page_range %}
+  {% if page_obj.number == i %}
+    <li class="page-item active">
+      <span class="page-link">{{ i }}</span>
     </li>
-    <li>
-      <a href=""><span class="visuallyhidden">page </span>1</a>
+  {% else %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ i }}&{{ request.GET.urlencode|cut:'page=' }}">{{ i }}</a>
     </li>
-    <li>
-      <a href="" aria-current="page">
-        <span class="visuallyhidden">page </span>2
-      </a>
-    </li>
-    <li>
-      <a href=""> <span class="visuallyhidden">page </span>3 </a>
-    </li>
-    <li>
-      <a href=""> <span class="visuallyhidden">page </span>4 </a>
-    </li>
-    <li>
-      <a href="">
-        <span class="visuallyhidden">next set of pages</span
-        ><span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-  </ul>
-</nav>
+  {% endif %}
+{% endfor %}
+
+{% if page_obj.has_next %}
+  <li class="page-item">
+    <a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode|cut:'page=' }}">
+      &raquo;
+    </a>
+  </li>
+{% else %}
+  <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+{% endif %}

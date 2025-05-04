@@ -1,38 +1,54 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>
-    {{ redactor.username }}
-    <a href="{% url 'news:redactor-list' %}" class="btn btn-outline-primary me-2">
-      ⬅ Назад
-    </a>
+<div class="container mt-4 fade-in">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">{{ redactor.username }}</h2>
+    <div>
+      <a href="{% url 'news:redactor-list' %}" class="btn btn-outline-primary me-2">
+        ⬅ Назад
+      </a>
+      {% if request.user == redactor %}
+        <a href="{% url 'news:redactor-update' pk=redactor.id %}" class="btn btn-secondary me-2">
+          ✏️ Редагувати
+        </a>
+        <a href="{% url 'news:redactor-delete' pk=redactor.id %}" class="btn btn-danger">
+          🗑️ Видалити
+        </a>
+      {% endif %}
+    </div>
+  </div>
 
-    <a href="{% url 'news:redactor-delete' pk=redactor.id %}" class="btn btn-danger ms-2">
-      Видалити
-    </a>
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Інформація про редактора</h5>
+      <ul class="list-unstyled mb-0">
+        <li><strong>Ім'я:</strong> {{ redactor.first_name }}</li>
+        <li><strong>Прізвище:</strong> {{ redactor.last_name }}</li>
+        <li><strong>Email:</strong> {{ redactor.email }}</li>
+        <li><strong>Досвід:</strong> {{ redactor.years_of_experience }} років</li>
+      </ul>
+    </div>
+  </div>
 
-    <a href="{% url 'news:redactor-update' pk=redactor.id %}" class="btn btn-secondary ms-2">
-      Редагувати
-    </a>
-  </h1>
-
-  <ul>
-    <li><strong>Ім'я:</strong> {{ redactor.first_name }}</li>
-    <li><strong>Прізвище:</strong> {{ redactor.last_name }}</li>
-    <li><strong>Email:</strong> {{ redactor.email }}</li>
-    <li><strong>Досвід:</strong> {{ redactor.years_of_experience }} років</li>
-  </ul>
-
-  <h3>Газети, де він/вона редактор:</h3>
-  <ul>
-    {% for newspaper in redactor.newspaper_set.all %}
-      <li>
-        <a href="{% url 'news:newspaper-detail' pk=newspaper.id %}">
-          {{ newspaper.title }}
-        </a> — {{ newspaper.published_date }}
-      </li>
-    {% empty %}
-      <li>Редактор ще не пов’язаний з жодною газетою.</li>
-    {% endfor %}
-  </ul>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Газети, де він/вона редактор:</h5>
+      {% if redactor.newspaper_set.all %}
+        <ul class="list-group list-group-flush">
+          {% for newspaper in redactor.newspaper_set.all %}
+            <li class="list-group-item bg-transparent">
+              <a href="{% url 'news:newspaper-detail' pk=newspaper.id %}">
+                {{ newspaper.title }}
+              </a>
+              <span class="text-muted">— {{ newspaper.published_date }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted mb-0">Редактор ще не пов’язаний з жодною газетою.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}

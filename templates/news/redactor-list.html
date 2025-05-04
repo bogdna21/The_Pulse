@@ -2,23 +2,48 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
-  <h1>Redactors</h1>
-  <form action="" method="get">
-    {{ search_form|crispy }}
-    <input type="submit" value="🔍" class="btn btn-secondary">
-  </form>
-  {% if redactor_list %}
-    <ul>
-      {% for redactor in redactor_list %}
-        <li>
-          <p><a href="{% url 'news:redactor-detail' pk=redactor.id %}">{{ redactor.first_name }} {{ redactor.last_name }}</a>
-            Years of experience - {{ redactor.years_of_experience }}
-          </p>
-        </li>
-      {% endfor %}
+<h1 class="mt-4 mb-3">Редактори</h1>
+
+<form method="get" class="mb-4">
+  <div class="form-row">
+    <div class="col">
+      {{ search_form|crispy }}
+    </div>
+    <div class="col-auto">
+      <input type="submit" value="🔍 Пошук" class="btn btn-secondary">
+    </div>
+  </div>
+</form>
+
+{% if redactor_list %}
+  <div class="row">
+    {% for redactor in redactor_list %}
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100 fade-in">
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="{% url 'news:redactor-detail' pk=redactor.id %}">
+                {{ redactor.first_name }} {{ redactor.last_name }}
+              </a>
+            </h5>
+            <p class="card-text">
+              Досвід: {{ redactor.years_of_experience }} років
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>Наразі немає редакторів у базі даних.</p>
+{% endif %}
+
+<!-- Закріплена пагінація -->
+<div class="pagination-wrapper custom-pagination bg-white py-3 shadow">
+  <nav aria-label="pagination">
+    <ul class="pagination justify-content-center mb-0">
+      {% include "includes/pagination.html" %}
     </ul>
-  {% else %}
-    <p>There are no redactors in news</p>
-  {% endif %}
-  {% include "includes/pagination.html" %}
+  </nav>
+</div
 {% endblock %}

@@ -2,21 +2,40 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
-  <form action="" method="get">
-    {{ search_form|crispy }}
-    <input type="submit" value="🔍" class="btn btn-secondary">
-  </form>
-  <h1>All topics</h1>
-  {% if topic_list %}
-    <ul>
-      {% for topic in topic_list %}
-        <li>
-          {{ topic.name }}
-        </li>
-      {% endfor %}
+<h1 class="mt-4 mb-3">Тематики</h1>
+
+<form method="get" class="mb-4">
+  <div class="form-row">
+    <div class="col">
+      {{ search_form|crispy }}
+    </div>
+    <div class="col-auto">
+      <input type="submit" value="🔍 Пошук" class="btn btn-secondary">
+    </div>
+  </div>
+</form>
+
+{% if topic_list %}
+  <div class="row">
+    {% for topic in topic_list %}
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100 fade-in">
+          <div class="card-body">
+            <h5 class="card-title">{{ topic.name }}</h5>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>Наразі немає тем у базі даних.</p>
+{% endif %}
+
+<div class="pagination-wrapper custom-pagination bg-white py-3 shadow">
+  <nav aria-label="pagination">
+    <ul class="pagination justify-content-center mb-0">
+      {% include "includes/pagination.html" %}
     </ul>
-  {% else %}
-    <p>There are no topics in news</p>
-  {% endif %}
-  {% include "includes/pagination.html" %}
+  </nav>
+</div>
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5 fade-in">
+  <div class="card shadow p-4 text-center">
+    <h2 class="mb-4">Вийти з акаунту</h2>
+    <p>Ви впевнені, що хочете вийти?</p>
+    <form method="post" action="{% url 'account_logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">🚪 Вийти</button>
+      <a href="/" class="btn btn-outline-secondary ms-2">⬅ Назад</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

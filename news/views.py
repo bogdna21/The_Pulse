@@ -1,13 +1,15 @@
 from datetime import datetime
 
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
-from news.forms import TopicSearchForm, RedactorSearchForm, NewspaperSearchForm
+from news.forms import TopicSearchForm, RedactorSearchForm, NewspaperSearchForm, EmailVerificationForm, \
+    SetNewPasswordForm
 from news.models import Newspaper, Topic, Redactor
 
 
@@ -33,6 +35,7 @@ class NewspaperListView(LoginRequiredMixin, generic.ListView):
     model = Newspaper
     template_name = "news/newspaper_list.html"
     queryset = Newspaper.objects.all()
+    paginate_by = 6
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(NewspaperListView, self).get_context_data(**kwargs)
@@ -66,6 +69,8 @@ class RedactorListView(LoginRequiredMixin, generic.ListView):
     model = Redactor
     template_name = "news/redactor-list.html"
     queryset = Redactor.objects.all()
+    context_object_name = "redactor_list"
+    paginate_by = 6
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(RedactorListView, self).get_context_data(**kwargs)
@@ -99,6 +104,7 @@ class TopicListView(LoginRequiredMixin, generic.ListView):
     model = Topic
     template_name = "news/topic.html"
     queryset = Topic.objects.all()
+    paginate_by = 6
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(TopicListView, self).get_context_data(**kwargs)
@@ -110,3 +116,44 @@ class TopicListView(LoginRequiredMixin, generic.ListView):
         if name:
             return self.queryset.filter(name__icontains=name)
         return self.queryset
+
+
+def custom_password_reset_request(request):
+    if request.method == 'POST':
+        form = EmailVerificationForm(request.POST)
+        if form.is_valid():
+            # Тут можна зберігати email у сесії або передавати через GET
+            email = form.cleaned_data['email']
+            request.session['reset_email'] = email
+            return redirect('news:custom_password_change')  # ваш URL-нейм
+    else:
+        form = EmailVerificationForm()
+
+    return render(request, 'account/password_reset.html', {'form': form})
+
+
+def custom_password_change_view(request):
+    email = request.session.get('reset_email')
+    if not email:
+        return redirect('news:custom_password_reset')  # Якщо немає email, повертаємося назад
+
+    user = Redactor.objects.filter(email=email).first()
+    if not user:
+        return redirect('news:custom_password_reset')  # Повторна перевірка
+
+    if request.method == 'POST':
+        form = SetNewPasswordForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['new_password1']
+            user.password = make_password(password)
+            user.save()
+
+            # Очистимо сесію після успішної зміни
+            request.session.pop('reset_email', None)
+            return redirect('account_login')  # Перенаправлення до входу
+    else:
+        form = SetNewPasswordForm()
+    return render(request, 'account/password_change.html', {
+        'form': form,
+        'email': email,
+    })
