@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Django database
+db.sqlite3
+*.sqlite3
+
+# Logs
+*.log
+
+# Django static/media
+/static/
+/media/
+/staticfiles/
+/node_modules/
+
+# Secret settings
+.env
+*.env
+config/settings/local.py
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Test/migrations cache
+.coverage
+htmlcov/
+*.cover
+.tox/
+.nox/
+.cache/
+pytest_cache/
+*.mo
+*.pot
+
+# Migrations (опціонально — залежить від підходу до керування)
+# Якщо генеруються вручну і не треба ігнорувати — видали цей рядок
+*/migrations/*.py
+*/migrations/*.pyc
