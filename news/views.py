@@ -122,10 +122,9 @@ def custom_password_reset_request(request):
     if request.method == 'POST':
         form = EmailVerificationForm(request.POST)
         if form.is_valid():
-            # Тут можна зберігати email у сесії або передавати через GET
             email = form.cleaned_data['email']
             request.session['reset_email'] = email
-            return redirect('news:custom_password_change')  # ваш URL-нейм
+            return redirect('news:custom_password_change')
     else:
         form = EmailVerificationForm()
 
@@ -135,11 +134,11 @@ def custom_password_reset_request(request):
 def custom_password_change_view(request):
     email = request.session.get('reset_email')
     if not email:
-        return redirect('news:custom_password_reset')  # Якщо немає email, повертаємося назад
+        return redirect('news:custom_password_reset')
 
     user = Redactor.objects.filter(email=email).first()
     if not user:
-        return redirect('news:custom_password_reset')  # Повторна перевірка
+        return redirect('news:custom_password_reset')
 
     if request.method == 'POST':
         form = SetNewPasswordForm(request.POST)
@@ -150,7 +149,7 @@ def custom_password_change_view(request):
 
             # Очистимо сесію після успішної зміни
             request.session.pop('reset_email', None)
-            return redirect('account_login')  # Перенаправлення до входу
+            return redirect('account_login')
     else:
         form = SetNewPasswordForm()
     return render(request, 'account/password_change.html', {
