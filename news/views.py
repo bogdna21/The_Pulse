@@ -1,34 +1,40 @@
 from datetime import datetime
 
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views import generic
+from django.views import View, generic
 
-from news.forms import TopicSearchForm, RedactorSearchForm, NewspaperSearchForm, EmailVerificationForm, \
-    SetNewPasswordForm
+from news.forms import (
+    TopicSearchForm,
+    RedactorSearchForm,
+    NewspaperSearchForm,
+    EmailVerificationForm,
+    SetNewPasswordForm,
+)
 from news.models import Newspaper, Topic, Redactor
 
 
-def index(request: HttpRequest) -> HttpResponse:
-    num_newspaper = Newspaper.objects.count()
-    num_redactor = Redactor.objects.count()
-    num_topic = Topic.objects.count()
-    year = datetime.now().year
-    context = {
-        "num_redactor": num_redactor,
-        "num_newspaper": num_newspaper,
-        "num_topic": num_topic,
-        "year": year,
-    }
-    return render(request, "news/index.html", context=context)
+class IndexView(View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        num_newspaper = Newspaper.objects.count()
+        num_redactor = Redactor.objects.count()
+        num_topic = Topic.objects.count()
+        year = datetime.now().year
+        context = {
+            "num_redactor": num_redactor,
+            "num_newspaper": num_newspaper,
+            "num_topic": num_topic,
+            "year": year,
+        }
+        return render(request, "news/index.html", context=context)
 
 
-def about_us(request: HttpRequest) -> HttpResponse:
-    return render(request, "news/about_us.html")
+class AboutUsView(View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        return render(request, "news/about_us.html")
 
 
 class NewspaperListView(LoginRequiredMixin, generic.ListView):
@@ -38,7 +44,7 @@ class NewspaperListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 6
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(NewspaperListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["search_form"] = NewspaperSearchForm()
         return context
 
@@ -73,7 +79,7 @@ class RedactorListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 6
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(RedactorListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["search_form"] = RedactorSearchForm()
         return context
 
@@ -90,7 +96,7 @@ class RedactorDetailView(LoginRequiredMixin, generic.DetailView):
 
 
 class RedactorDeleteView(LoginRequiredMixin, generic.DeleteView):
-    model = Newspaper
+    model = Redactor
     success_url = reverse_lazy("news:redactor-list")
 
 
@@ -107,7 +113,7 @@ class TopicListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 6
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(TopicListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["search_form"] = TopicSearchForm()
         return context
 
@@ -118,41 +124,52 @@ class TopicListView(LoginRequiredMixin, generic.ListView):
         return self.queryset
 
 
-def custom_password_reset_request(request):
-    if request.method == 'POST':
+class CustomPasswordResetView(View):
+    def get(self, request, *args, **kwargs):
+        form = EmailVerificationForm()
+        return render(request, "account/password_reset.html", {"form": form})
+
+    def post(self, request, *args, **kwargs):
         form = EmailVerificationForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
-            request.session['reset_email'] = email
-            return redirect('news:custom_password_change')
-    else:
-        form = EmailVerificationForm()
-
-    return render(request, 'account/password_reset.html', {'form': form})
+            email = form.cleaned_data["email"]
+            request.session["reset_email"] = email
+            return redirect("news:custom_password_change")
+        return render(request, "account/password_reset.html", {"form": form})
 
 
-def custom_password_change_view(request):
-    email = request.session.get('reset_email')
-    if not email:
-        return redirect('news:custom_password_reset')
+class CustomPasswordChangeView(View):
+    def get(self, request, *args, **kwargs):
+        email = request.session.get("reset_email")
+        if not email:
+            return redirect("news:custom_password_reset")
 
-    user = Redactor.objects.filter(email=email).first()
-    if not user:
-        return redirect('news:custom_password_reset')
+        form = SetNewPasswordForm()
+        return render(
+            request,
+            "account/password_change.html",
+            {"form": form, "email": email},
+        )
 
-    if request.method == 'POST':
+    def post(self, request, *args, **kwargs):
+        email = request.session.get("reset_email")
+        if not email:
+            return redirect("news:custom_password_reset")
+
+        user = Redactor.objects.filter(email=email).first()
+        if not user:
+            return redirect("news:custom_password_reset")
+
         form = SetNewPasswordForm(request.POST)
         if form.is_valid():
-            password = form.cleaned_data['new_password1']
+            password = form.cleaned_data["new_password1"]
             user.password = make_password(password)
             user.save()
+            request.session.pop("reset_email", None)
+            return redirect("account_login")
 
-            # Очистимо сесію після успішної зміни
-            request.session.pop('reset_email', None)
-            return redirect('account_login')
-    else:
-        form = SetNewPasswordForm()
-    return render(request, 'account/password_change.html', {
-        'form': form,
-        'email': email,
-    })
+        return render(
+            request,
+            "account/password_change.html",
+            {"form": form, "email": email},
+        )
