@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from news.models import Newspaper, Topic, Redactor
 
@@ -11,7 +13,7 @@ def test_topic_str():
 @pytest.mark.django_db
 def test_newspaper_str():
     topic = Topic.objects.create(name="Tech")
-    newspaper = Newspaper.objects.create(title="AI News", content="test", topic=topic)
+    newspaper = Newspaper.objects.create(title="AI News", content="test", topic=topic,  published_date=date.today())
     assert "AI News" in str(newspaper)
 
 
