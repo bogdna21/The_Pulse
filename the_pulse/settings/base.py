@@ -152,7 +152,5 @@ LOGIN_REDIRECT_URL = '/'
 
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
