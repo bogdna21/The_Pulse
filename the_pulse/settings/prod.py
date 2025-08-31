@@ -23,5 +23,3 @@ DATABASES = {
         'PORT': int(os.environ['POSTGRES_DB_PORT']),
     }
 }
-
-STATIC_ROOT = BASE_DIR / "staticfiles"
